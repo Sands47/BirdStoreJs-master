@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bird Store</title>
+    <script src="Store.js"></script>
+    <script src="demo.js"></script>
+    <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+</head>
+<body>
+<form id="addBird" onsubmit="return false">
+    Bird name:<input id="birdName" type="text"><br>
+    Price: <input id="price" type="text"><br>
+    Amount: <input id="addCount" type="text"><br>
+    <button id="submitBird" onclick="addBird()">Add bird</button>
+</form>
+<table id="birds">
+    <tr>
+        <td>Name:</td>
+        <td>Price:</td>
+        <td>Amount:</td>
+    </tr>
+</table>
+<form id="sellBird" onsubmit="return false">
+    Bird name:<input id="birdToSell" type="text"><br>
+    Amount: <input id="amountToSell" type="text"><br>
+    Client: <input id="clientToSell" type="text"><br>
+    <button id="sellButton" onclick="sellBird()">Sell bird</button>
+</form>
+<table id="clients">
+    <tr>
+        <td>Name:</td>
+        <td>Number of trades:</td>
+    </tr>
+</table>
+<table id="trades">
+    <tr>
+        <td>Bird:</td>
+        <td>Amount:</td>
+        <td>To client:</td>
+    </tr>
+</table>
+<button id="b1" onclick="test()">Press me</button>
+<script>
+    function test() {
+        printAvailableBirds(store);
+    }
+
+    function addBird() {
+        const name = document.getElementById("birdName").value;
+        const price = document.getElementById("price").value;
+        const count = document.getElementById("addCount").value;
+        const bird = store.add(name, parseInt(count), parseFloat(price));
+        addBirdToTable(bird);
+    }
+
+    function sellBird() {
+        const birdName = document.getElementById("birdToSell").value;
+        const clientName = document.getElementById("clientToSell").value;
+        const count = document.getElementById("amountToSell").value;
+        const trade = store.sell(birdName, parseInt(count), clientName);
+        refreshBirdsTable();
+        addTransaction(trade);
+    }
+
+    function addBirdToTable(bird) {
+        const birdsTable = document.getElementById("birds");
+        const tbody = birdsTable.children[0];
+        const row = document.createElement("tr");
+        row.id = bird.name;
+        for (const prop in bird) {
+            if (bird.hasOwnProperty(prop)) {
+                const cell = document.createElement("td");
+                cell.appendChild(document.createTextNode(bird[prop]));
+                row.appendChild(cell);
+            }
+        }
+        tbody.appendChild(row);
+    }
+
+    function addTransaction(trade) {
+        if (trade !== undefined) {
+            const tradesTable = document.getElementById("trades");
+            const tbody = tradesTable.children[0];
+            const row = document.createElement("tr");
+            for (const prop in trade) {
+                if (trade.hasOwnProperty(prop)) {
+                    const cell = document.createElement("td");
+                    cell.appendChild(document.createTextNode(trade[prop]));
+                    row.appendChild(cell);
+                }
+            }
+            tbody.appendChild(row);
+        }
+    }
+
+    function refreshBirdsTable() {
+        const birdsTable = document.getElementById("birds");
+        let tbody = birdsTable.children[0];
+        for (const childNode of tbody.childNodes) {
+            if (childNode.id !== undefined) {
+                $("#"+childNode.id).remove();
+            }
+        }
+        for (const bird of store.getBirds()) {
+            const row = document.createElement("tr");
+            row.id = bird.name;
+            for (const prop in bird) {
+                if (bird.hasOwnProperty(prop)) {
+                    const cell = document.createElement("td");
+                    cell.appendChild(document.createTextNode(bird[prop]));
+                    row.appendChild(cell);
+                }
+            }
+            tbody.appendChild(row);
+        }
+    }
+
+    var store = new Store();
+    demo(store);
+    refreshBirdsTable();
+</script>
+</body>
+</html>
