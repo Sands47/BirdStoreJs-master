@@ -86,7 +86,7 @@ function Store() {
         return birds[name];
     }
 
-    this.getClientByName = function (name) {
+    var getClientByName = function (name) {
         return clients[name];
     }
 
@@ -112,7 +112,10 @@ function Store() {
         if (client !== undefined) {
             var clientValue = client;
             if (typeof client !== 'object' || !client.hasOwnProperty("trades")) {
-                clientValue = new Client(client);
+                clientValue = getClientByName(client);
+                if (clientValue === undefined) {
+                    clientValue = new Client(client);
+                }
             }
             clientValue.trades.push(trade);
             if (!clients.hasOwnProperty(clientValue.name)) {

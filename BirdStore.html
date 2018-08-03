@@ -6,6 +6,15 @@
     <script src="Store.js"></script>
     <script src="demo.js"></script>
     <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <style>
+        table, td {
+            border: 1px solid black;
+            background: azure;
+        }
+        table {
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
 <form id="addBird" onsubmit="return false">
@@ -40,7 +49,6 @@
         <td>To client:</td>
     </tr>
 </table>
-<button id="b1" onclick="test()">Press me</button>
 <script>
     function test() {
         printAvailableBirds(store);
@@ -60,6 +68,7 @@
         const count = document.getElementById("amountToSell").value;
         const trade = store.sell(birdName, parseInt(count), clientName);
         refreshBirdsTable();
+        refreshClientsTable();
         addTransaction(trade);
     }
 
@@ -97,9 +106,9 @@
     function refreshBirdsTable() {
         const birdsTable = document.getElementById("birds");
         let tbody = birdsTable.children[0];
-        for (const childNode of tbody.childNodes) {
-            if (childNode.id !== undefined) {
-                $("#"+childNode.id).remove();
+        for (var i = tbody.childNodes.length - 1; i > 0; i--) {
+            if (tbody.childNodes[i] !== undefined && tbody.childNodes[i].id !== "") {
+                tbody.removeChild(tbody.childNodes[i]);
             }
         }
         for (const bird of store.getBirds()) {
@@ -109,6 +118,29 @@
                 if (bird.hasOwnProperty(prop)) {
                     const cell = document.createElement("td");
                     cell.appendChild(document.createTextNode(bird[prop]));
+                    row.appendChild(cell);
+                }
+            }
+            tbody.appendChild(row);
+        }
+    }
+
+    function refreshClientsTable() {
+        const clientsTable = document.getElementById("clients");
+        let tbody = clientsTable.children[0];
+        for (var i = tbody.childNodes.length - 1; i > 0; i--) {
+            if (tbody.childNodes[i] !== undefined && tbody.childNodes[i].id !== "") {
+                tbody.removeChild(tbody.childNodes[i]);
+            }
+        }
+        for (const client of store.getClients()) {
+            const row = document.createElement("tr");
+            row.id = client.name;
+            for (const prop in client) {
+                if (client.hasOwnProperty(prop)) {
+                    const cell = document.createElement("td");
+                    const value = client[prop];
+                    cell.appendChild(document.createTextNode(typeof value === "string" ? value : value.length));
                     row.appendChild(cell);
                 }
             }

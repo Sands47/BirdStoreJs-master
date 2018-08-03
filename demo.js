@@ -7,7 +7,7 @@ function demo(store) {
     store.add(chicken, 10);
     store.add('Parrot', 2, 15);
 
-    printAvailableBirds(store);
+    /*printAvailableBirds(store);
 
     store.sell(chicken, 2, jay);
     store.sell(duck, 1, jay);
@@ -15,5 +15,5 @@ function demo(store) {
     store.sell(duck, 1, store.getClientByName('Jay'));
     store.sell(chicken, 2, new Client('Randall'));
 
-    store.changePrice('Duck', 15);
+    store.changePrice('Duck', 15);*/
 }
