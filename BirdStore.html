@@ -2,53 +2,93 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bird Store</title>
     <script src="Store.js"></script>
     <script src="demo.js"></script>
-    <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <style>
-        table, td {
-            border: 1px solid black;
-            background: azure;
+        input {
+            margin-left: 10px;
         }
-        table {
+
+        label {
+            width: 20%;
+        }
+
+        .block {
+            margin: 5px;
+            padding: 5px;
+            border: 1px solid black;
+        }
+
+        .empty-block {
             margin: 5px;
         }
     </style>
+    <h1>Bird Store</h1>
 </head>
 <body>
-<form id="addBird" onsubmit="return false">
-    Bird name:<input id="birdName" type="text"><br>
-    Price: <input id="price" type="text"><br>
-    Amount: <input id="addCount" type="text"><br>
-    <button id="submitBird" onclick="addBird()">Add bird</button>
-</form>
-<table id="birds">
-    <tr>
-        <td>Name:</td>
-        <td>Price:</td>
-        <td>Amount:</td>
-    </tr>
-</table>
-<form id="sellBird" onsubmit="return false">
-    Bird name:<input id="birdToSell" type="text"><br>
-    Amount: <input id="amountToSell" type="text"><br>
-    Client: <input id="clientToSell" type="text"><br>
-    <button id="sellButton" onclick="sellBird()">Sell bird</button>
-</form>
-<table id="clients">
-    <tr>
-        <td>Name:</td>
-        <td>Number of trades:</td>
-    </tr>
-</table>
-<table id="trades">
-    <tr>
-        <td>Bird:</td>
-        <td>Amount:</td>
-        <td>To client:</td>
-    </tr>
-</table>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col block bg-light">
+            <h4>Add bird to store</h4>
+            <form id="addBird" onsubmit="return false">
+                <label>Bird name:</label><input id="birdName" type="text"><br>
+                <label>Price:</label><input id="price" type="text"><br>
+                <label>Amount:</label><input id="addCount" type="text"><br>
+                <button id="submitBird" onclick="addBird()">Add bird</button>
+            </form>
+        </div>
+        <div class="col block bg-light">
+            <h4>Sell bird</h4>
+            <form id="sellBird" onsubmit="return false">
+                <label>Bird name:</label><input id="birdToSell" type="text"><br>
+                <label>Amount:</label><input id="amountToSell" type="text"><br>
+                <label>Client:</label><input id="clientToSell" type="text"><br>
+                <button id="sellButton" onclick="sellBird()">Sell bird</button>
+            </form>
+        </div>
+        <div class="col block bg-light">
+            <h6>List of clients</h6>
+            <table class="table table-light table-hover" id="clients">
+                <tr>
+                    <td>Name:</td>
+                    <td>Number of trades:</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col block bg-light">
+            <h6>Birds in store</h6>
+            <table class="table table-light table-hover" id="birds">
+                <tr>
+                    <td>Name:</td>
+                    <td>Price:</td>
+                    <td>Amount:</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col empty-block"></div>
+        <div class="col block bg-light">
+            <h6>Transaction history</h6>
+            <table class="table table-light table-hover" id="trades">
+                <tr>
+                    <td>Bird:</td>
+                    <td>Amount:</td>
+                    <td>To client:</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
 <script>
     function test() {
         printAvailableBirds(store);
@@ -58,8 +98,8 @@
         const name = document.getElementById("birdName").value;
         const price = document.getElementById("price").value;
         const count = document.getElementById("addCount").value;
-        const bird = store.add(name, parseInt(count), parseFloat(price));
-        addBirdToTable(bird);
+        store.add(name, parseInt(count), parseFloat(price));
+        refreshBirdsTable();
     }
 
     function sellBird() {
@@ -70,21 +110,6 @@
         refreshBirdsTable();
         refreshClientsTable();
         addTransaction(trade);
-    }
-
-    function addBirdToTable(bird) {
-        const birdsTable = document.getElementById("birds");
-        const tbody = birdsTable.children[0];
-        const row = document.createElement("tr");
-        row.id = bird.name;
-        for (const prop in bird) {
-            if (bird.hasOwnProperty(prop)) {
-                const cell = document.createElement("td");
-                cell.appendChild(document.createTextNode(bird[prop]));
-                row.appendChild(cell);
-            }
-        }
-        tbody.appendChild(row);
     }
 
     function addTransaction(trade) {
@@ -148,7 +173,7 @@
         }
     }
 
-    var store = new Store();
+    const store = new Store();
     demo(store);
     refreshBirdsTable();
 </script>
